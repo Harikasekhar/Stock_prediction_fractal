@@ -3,17 +3,20 @@ import pickle
 import os
 import pandas as pd
 
+# app = Flask(name)
+
 app = Flask(__name__)
 
+
 # Define the directory where the models are stored
-model_path = 'D:\\Python\\Stock_price_prediction\\Stock_price_prediction\\models\\best_model.pkl'
+model_path = 'model.pkl'
 
 # Load the model
 with open(model_path, 'rb') as f:
     best_model = pickle.load(f)
 
 # Define the predict route
-@app.route('/predict', methods=['POST', 'GET'])
+@app.route('/predict', methods=['GET'])
 def predict():
     # Parse the JSON request data
     data = request.get_json()
@@ -37,5 +40,14 @@ def predict():
     # Return the predictions as JSON response
     return jsonify({'predictions': predictions.tolist()})
 
-if __name__ == '__main__':
+@app.route('/')
+# ‘/’ URL is bound with hello_world() function.
+def hello_world():
+    return 'Hello World'
+
+@app.route('/Hi', methods=['GET'])
+def Hi():
+    return 'Hi World'
+
+if __name__== '_main_':
     app.run(host='127.0.0.1', port=5000, debug=True)
