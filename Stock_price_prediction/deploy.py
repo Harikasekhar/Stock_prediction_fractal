@@ -21,22 +21,17 @@ with open(model_path, 'rb') as f:
     best_model = pickle.load(f)
 
 # Define the predict route
-@app.route('/predict', methods=['POST'])
+@app.route('/predict', methods=['GET', 'POST'])
 def predict():
-    # Parse the JSON request data
+    if request.method == 'GET':
+        # Handle GET request
+        return jsonify({'message': 'GET method not allowed'})
+
+    # Handle POST request
     data = request.get_json()
+    # Process the data and return predictions
 
-    # Extract input features from the request data
-    features = data['features']
-
-    # Convert features to DataFrame
-    features_df = pd.DataFrame(features)
-
-    # Make predictions using the best model
-    predictions = best_model.predict(features_df)
-
-    # Return the predictions as JSON response
-    return jsonify({'predictions': predictions.tolist()})
+    return jsonify({'predictions': data.tolist()})
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)
