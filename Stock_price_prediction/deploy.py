@@ -6,32 +6,36 @@ import pandas as pd
 app = Flask(__name__)
 
 # Define the directory where the models are stored
-model_dir = 'D:\\Python\\Stock_price_prediction\\Stock_price_prediction\\models'
-
-# Assuming you have the stock name and model type
-stock_name = "NIO"
-model_type = "Linear Before Tuning"
-
-# Construct the file path
-model_filename = f"{stock_name}_{model_type}_model.pkl"
-model_path = os.path.join(model_dir, model_filename)
+model_path = 'D:\\Python\\Stock_price_prediction\\Stock_price_prediction\\models\\best_model.pkl'
 
 # Load the model
 with open(model_path, 'rb') as f:
     best_model = pickle.load(f)
 
 # Define the predict route
-@app.route('/predict', methods=['GET', 'POST'])
+@app.route('/predict', methods=['POST'])
 def predict():
-    if request.method == 'GET':
-        # Handle GET request
-        return jsonify({'message': 'GET method not allowed'})
-
-    # Handle POST request
+    # Parse the JSON request data
     data = request.get_json()
-    # Process the data and return predictions
 
-    return jsonify({'predictions': data.tolist()})
+    # Check if 'features' key is present in the JSON data
+    if 'features' not in data:
+        return jsonify({'error': 'No features found in the request data'})
+
+    # Assuming data contains features as a list of dictionaries
+    features = data['features']
+
+    # Convert features to DataFrame
+    features_df = pd.DataFrame(features)
+
+    # Preprocess features if needed (e.g., scaling, encoding)
+    # Ensure that the preprocessing steps match those used during training
+
+    # Make predictions using the model
+    predictions = best_model.predict(features_df)
+
+    # Return the predictions as JSON response
+    return jsonify({'predictions': predictions.tolist()})
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)
