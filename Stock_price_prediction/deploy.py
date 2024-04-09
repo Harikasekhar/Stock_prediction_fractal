@@ -13,7 +13,7 @@ with open(model_path, 'rb') as f:
     best_model = pickle.load(f)
 
 # Define the predict route
-@app.route('/predict', methods=['POST'])
+@app.route('/predict', methods=['POST', 'GET'])
 def predict():
     # Parse the JSON request data
     data = request.get_json()
